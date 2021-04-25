@@ -4,49 +4,81 @@
         <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
         <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
         <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
-      </head>
+    </head>
       <body>
-        <div id="box"></div>
+        
+        <div id="line_chart"></div>
+        <div id="boxes"></div>
+        
         <script>
           
-            var box = {
+            var stay_time = {
                 "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
-                "title": "Stay Time",
-                "data": {'url': "https://raw.githubusercontent.com/AugustCzy/152_final_mc1/main/MC1/data/stay_time.csv?token=AQ6CAK5AOS2EVFR4NOMI2F3AQD6OQ"},
-                "encoding": {"y": {"field": "Species", "type": "nominal", "title": null}},
-                "layer": [
-                    {
-                    "mark": {"type": "rule"},
-                    "encoding": {
-                        "x": {"field": "lower", "type": "quantitative","scale": {"zero": false}, "title": null},
-                        "x2": {"field": "upper"}
-                    }
-                    },
-                    {
-                    "mark": {"type": "bar", "size": 14},
-                    "encoding": {
-                        "x": {"field": "q1", "type": "quantitative"},
-                        "x2": {"field": "q3"},
-                        "color": {"field": "Species", "type": "nominal", "legend": null}
-                    }
-                    },
-                    {
-                    "mark": {"type": "tick", "color": "white", "size": 14},
-                    "encoding": {
-                        "x": {"field": "median", "type": "quantitative"}
-                    }
-                    },
-                    {
-                    "transform": [{"flatten": ["outliers"]}],
-                    "mark": {"type": "point", "style": "boxplot-outliers"},
-                    "encoding": {
-                        "x": {"field": "outliers", "type": "quantitative"}
-                    }
-                    }
-                ]
-                }
+                "title": "Stay time for each id",
+                "width": 200,
+                "height": 500,
+                "data": {
+                    "url": "https://raw.githubusercontent.com/AugustCzy/152_final_mc1/main/MC1/data/stay_time.csv?token=AQ6CAK6S5OLCRZATJLNK5X3AQD7EK",
+                    "format": {"type": "csv"}
+                },
+                "mark": "boxplot",
+                "encoding": {
+                //"x": {"field": "hours", "type": "nominal"},
+                //"color": {"field": "Species", "type": "nominal", "legend": null},
+                "y": {
+                "field": "hours",
+                "type": "quantitative",
+                "scale": {"domain": [-1000, 9000]},
 
-            vegaEmbed('#box', box)
+                "selection": {
+                "grid": {
+                    "type": "interval", "bind": "scales",
+                    "zoom": "wheel!"
+                    }
+                },
+                }
+                }
+            }
+
+            var visit_freq = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "title": "Visit Frequency for each id",
+                "width": 200,
+                "height": 500,
+                "data": {
+                    "url": "https://raw.githubusercontent.com/AugustCzy/152_final_mc1/main/MC1/data/visit_freq.csv",
+                    "format": {"type": "csv"}
+                },
+                "mark": "boxplot",
+                "encoding": {
+                //"x": {"field": "hours", "type": "nominal"},
+                //"color": {"field": "Species", "type": "nominal", "legend": null},
+                "y": {
+                "field": "Date",
+                "type": "quantitative",
+                "scale": {"domain": [-50, 300]},
+
+                "selection": {
+                "grid": {
+                    "type": "interval", "bind": "scales",
+                    "zoom": "wheel!"
+                    }
+                },
+                }
+                }
+            }
+
+            var two_boxes = {
+                "hconcat": [stay_time, visit_freq]
+            }
+
+            
+            
+
+
+            //vegaEmbed('#stay_time', stay_time)
+            //vegaEmbed('#visit_freq', visit_freq)
+            vegaEmbed('#boxes', two_boxes)
 
         </script>
       </body>
