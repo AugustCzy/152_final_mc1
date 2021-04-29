@@ -37,11 +37,11 @@
                 //     }
                 // ],
                 "mark": "line",
-                // "params": [{
-                //     "name": "industry",
-                //     "select": {"type": "point", "fields": ["series"]},
-                //     "bind": {"legend": "dblclick"}
-                // }],
+                "params": [{
+                    "name": "car-type",
+                    "select": {"type": "point", "fields": ["car-type"]},
+                    "bind": "legend"
+                }],
                 "encoding": {
                     "x": {
                         "timeUnit": "hours",
@@ -55,9 +55,12 @@
                         "field": "car-id", 
                         //"type": "quantitative"
                     },
-                    //"color": {"field": "car-type"}
+                    "color": {"field": "car-type"},
+                    "opacity": {
+                        "condition": {"param": "car-type", "value": 1},
+                        "value": 0.2
+                    }
                 }
-
             }
 
             var stay_time = {
