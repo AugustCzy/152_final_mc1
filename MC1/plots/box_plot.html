@@ -4,6 +4,8 @@
         <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
         <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
         <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+        <script src="https://cdn.plot.ly/plotly-latest.min.js"></script>
+        <script src="https://cdn.jsdelivr.net/npm/danfojs@0.2.4/lib/bundle.min.js"></script>
     </head>
       <body>
         
@@ -11,7 +13,53 @@
         <div id="boxes"></div>
         
         <script>
-          
+            
+            //danfo.read_csv("https://raw.githubusercontent.com/AugustCzy/152_final_mc1/main/MC1/data/data.csv")
+
+
+
+            var line_chart = {
+                "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+                "title": "Count of visit by hours",
+                "width": 800,
+                "height": 300,
+                "data": {
+                    "url": "https://raw.githubusercontent.com/AugustCzy/152_final_mc1/main/MC1/data/data.csv",
+                    //"format": {"type": "csv"}
+                },
+                // "transform": [{
+                //     "aggregate": [{
+                //     "op": "count",
+                //     //"field": "car-id",
+                //     "as": "Counr of visit"
+                //     }],
+                //     "groupby": ["hours"]
+                //     }
+                // ],
+                "mark": "line",
+                // "params": [{
+                //     "name": "industry",
+                //     "select": {"type": "point", "fields": ["series"]},
+                //     "bind": {"legend": "dblclick"}
+                // }],
+                "encoding": {
+                    "x": {
+                        "timeUnit": "hours",
+                        "field": "Timestamp", 
+                        //"scale": {"domain": [0, 24]},
+                        "type": "ordinal",
+                        //"axis": {"domain": false, "tickSize": 0}
+                    },
+                    "y": {
+                        "aggregate": "count",
+                        "field": "car-id", 
+                        //"type": "quantitative"
+                    },
+                    //"color": {"field": "car-type"}
+                }
+
+            }
+
             var stay_time = {
                 "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
                 "title": "Stay time for each id",
@@ -79,6 +127,7 @@
             //vegaEmbed('#stay_time', stay_time)
             //vegaEmbed('#visit_freq', visit_freq)
             vegaEmbed('#boxes', two_boxes)
+            vegaEmbed('#line_chart', line_chart)
 
         </script>
       </body>
