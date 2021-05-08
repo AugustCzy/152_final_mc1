@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html>
+  <head>
+        <script src="https://cdn.jsdelivr.net/npm/vega@5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-lite@5"></script>
+        <script src="https://cdn.jsdelivr.net/npm/vega-embed@6"></script>
+  </head>
+  <body>
+    <div id= 'individual_timeline'></div>
+
+        <script>
+            var timeline ={
+              "$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+              "description": "Show the relationship between the Traffic flow through gates"
+
+
+              "data": {"https://raw.githubusercontent.com/AugustCzy/152_final_mc1/main/MC1/data/Lekagul%20Sensor%20Data.csv",
+              "format":{"type":"csv"}
+                          },
+              "mark": "rect",
+              "encoding": {
+                "y": {"field": "Gate-Name", "type": "nominal"},
+                "x": {"field": "Timestamp", "type": "ordinal"},
+                "color": {"aggregate": "mean", "field": "Traffic flow"}
+              },
+              "config": {
+                "axis": {"grid": true, "tickBand": "extent"}
+              }
+            }
+        </script>
+  </body>
+</html>
