@@ -9,8 +9,13 @@
     </head>
       <body>
         
-        <div id='heatmap'></div>
-        <div id="boxes"></div>
+        <div id='pattern'></div>
+        <div id="individual"></div>
+
+        <form action="/action_page.php">
+            <input type="text" id="myInput" placeholder="Search for names.." title="Type in a name">
+            <button onclick="search()">Search</button>
+        </form>
 
         
         <script>
@@ -24,7 +29,7 @@
                 "mark": {"type": "line", "tooltip": true},
                 "params": [
                     {
-                        "name": "Gate",
+                        "name": "Gate", //The scroll down 
                         "select": {"type": "point", "fields": ["gate-name"]},
                         // "transform": {
                         //             "filter": "gate-name == bind"
@@ -93,7 +98,7 @@
                 //     ]}
                 // }],
                 'vconcat': [{
-                            "mark": {"type": "line"},
+                            "mark": {"type": "line", 'tooltip':true},
                             "width": 800,
                             "height": 100,
                             "encoding": {
@@ -103,7 +108,7 @@
                                       //"type": "ordinal",
                                   },
                                   "y": {
-                                      "aggregate": "count",
+                                      "aggregate": "distinct",
                                       "field": "car-id", 
                                   },
                                   "color": {"field": "car-type"},
@@ -115,10 +120,11 @@
                                   //     "condition": {"param": "car-type", "value": 1},
                                   //     "value": 0.2
                                   // },
+                                  
                               },
 
                               "params": [{
-                                  "name": "brush",
+                                  "name": "brush", //The brush for time
                                   "select": {"type": "interval", "encodings": ["x"]}
                                 },
                                 {
@@ -132,7 +138,7 @@
                           "transform": [{
                                   "filter": {"param": "car-type"}
                                 }],
-                          "mark": "rect",
+                          "mark": {'type':"rect"},
                           "width": 800,
                           "height": 400,
                           "encoding": {
@@ -141,24 +147,31 @@
                                   "timeUnit": "utcyearmonthdate",
                                   "field": "Timestamp", 
                                   //"type": "ordinal",
-                                  "bin": {"extent": {"param": "brush"}}
+                                  "bin": {"extent": {"param": "brush"}} //interact with the brush 
                               },
                               "y": {
                                   // "bin": {"maxbins": 40},
                                   "field": "gate-name", 
                               },
                               "color": {
-                                  "aggregate": "count",
-                                  "type": "car-id"
+                                  "aggregate": "distinct",
+                                  "field": "car-id"
                                   },
                           
                           "config": {
                                   "view": {
                                   "stroke": "transparent"
                                   }
-                              },
+                                     },
 
-                          }
+                              "tooltip": [
+                                {"aggregate": "distinct",
+                                  "field": "car-id"},
+                                {'field': 'gate-name'},
+                                {"timeUnit": "utcyearmonthdate", 'field': 'Timestamp'}]
+
+                          },
+
                         }],
                 
               }
@@ -229,25 +242,167 @@
             }
 
 
+    		var timeline = {
+    			"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    			"description": "Google's stock price over time.",
+    			"width": 800,
+  				"height": 500,
+    			"data": {
+    				"url": "https://raw.githubusercontent.com/irenechang1510/Learning_journal/main/test_data.csv",
+    				"format": {"type":"csv"}
+    			},
+                // "params": [{
+                //     //"name": "pts",
+                //     "select": {"type": "point", "on": "mouseover"}
+                // }],
+    			"layer": [
+    			 	{
+    					"mark": {
+                            "type" : "line",
+                            "strokeWidth" : 1.5
+                        },
+    					"encoding": {
+    						"detail": {
+    							"field": "car-id",
+    							"type" : "nominal"
+    						},
+                            "color": {"value": "#000000"}
+    					}
+    				},
+                    {
+                        "mark": {
+                            "type": "point",
+                            "filled": true,
+                        },
+                        "encoding": {
+                            "color": {
+                                "field" : "gate_type",
+                                "type" : "nominal"
+                            },
+                            "shape": {
+                                "field" : "gate_type",
+                                "type" : "nominal"
+                            },
+                            "size" : {"value" : 100},
+                            "opacity" : {"value": 1},
+                            "tooltip" : {"field" : "gate-name"}
+                        }
+                    }
+    			],
+    			"encoding": {
+    				"x": {
+    					"field": "Timestamp", 
+    					"type": "temporal"
+    				},
+    				"y": {
+    					"field": "car-id",
+    					"type": "nominal"
+    				}
+    			},
+    			// "selection" : {
+    			// 	"org": {
+    			// 		"type" : "single",
+    			// 		"fields" : ["car-id"]
+    			// 	}
+    			// }
+    		}
+
+
+            function search(str) {
+                var timeline = {
+    			"$schema": "https://vega.github.io/schema/vega-lite/v5.json",
+    			"description": "Google's stock price over time.",
+    			"width": 800,
+  				"height": 500,
+    			"data": {
+    				"url": "https://raw.githubusercontent.com/irenechang1510/Learning_journal/main/test_data.csv",
+    				"format": {"type":"csv"}
+    			},
+
+                'transform' : [{
+                                  "filter": {"car-id": String(document.getElementById("myInput").value)}
+                                }],
+                // "params": [{
+                //     //"name": "pts",
+                //     "select": {"type": "point", "on": "mouseover"}
+                // }],
+    			"layer": [
+    			 	{
+    					"mark": {
+                            "type" : "line",
+                            "strokeWidth" : 1.5
+                        },
+    					"encoding": {
+    						"detail": {
+    							"field": "car-id",
+    							"type" : "nominal"
+    						},
+                            "color": {"value": "#000000"}
+    					}
+    				},
+                    {
+                        "mark": {
+                            "type": "point",
+                            "filled": true,
+                        },
+                        "encoding": {
+                            "color": {
+                                "field" : "gate_type",
+                                "type" : "nominal"
+                            },
+                            "shape": {
+                                "field" : "gate_type",
+                                "type" : "nominal"
+                            },
+                            "size" : {"value" : 100},
+                            "opacity" : {"value": 1},
+                            "tooltip" : {"field" : "gate-name"}
+                        }
+                    }
+    			],
+    			"encoding": {
+    				"x": {
+    					"field": "Timestamp", 
+    					"type": "temporal"
+    				},
+    				"y": {
+    					"field": "car-id",
+    					"type": "nominal"
+    				}
+    			},
+    			// "selection" : {
+    			// 	"org": {
+    			// 		"type" : "single",
+    			// 		"fields" : ["car-id"]
+    			// 	}
+    			// }
+    		}
+
+            return vegaEmbed('#individual',timeline)
+            }
 
             var two_boxes = {
                 "hconcat": [stay_time, visit_freq]
             }
 
-            var heat_and_line = {
+            var pattern = {
                 'vconcat': [heatmap, line_chart]
             }
-
-            var three = {
-                'hconcat': [heat_and_line, two_boxes]
+            
+            //vconcat two_boxes and timeline
+            var individual = {
+                'vconcat': [timeline, two_boxes]
             }
 
+            var whole = {
+                'hconcat': [pattern, individual] //replace two_boxes with rgiht side part. 
+            }
+
+
+
             
-            
-
-
-
-            vegaEmbed('#heatmap', three)
+            vegaEmbed('#pattern', pattern)
+            vegaEmbed('#individual',individual)
             //vegaEmbed('#boxes', two_boxes)
 
 
